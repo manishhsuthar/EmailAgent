@@ -24,10 +24,11 @@ Tasks:
     response = requests.post(
         OLLAMA_URL,
         json={
-            "model": "qwen3.5:4b",
+            "model": "llama3.2:3b",
             "prompt": prompt,
             "stream": False
-        }
+        },
+        timeout=30
     )
 
     result = response.json()["response"]
