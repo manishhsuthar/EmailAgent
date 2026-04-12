@@ -6,6 +6,8 @@ schedule.every(10).minutes.do(run_agent)
 
 print("AI Agent Started...")
 
+run_agent()  # Run immediately on start
+
 while True:
     schedule.run_pending()
     time.sleep(1)

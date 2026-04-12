@@ -2,6 +2,10 @@ from imapclient import IMAPClient
 import email
 from email.header import decode_header
 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 def decode_mime_words(s):
     decoded = decode_header(s)
     return ''.join(
@@ -11,8 +15,31 @@ def decode_mime_words(s):
 
 def check_emails():
     HOST = 'imap.gmail.com'
-    USERNAME = 'YOUR_EMAIL_ADDRESS'
-    PASSWORD = 'YOUR_EMAIL_PASSWORD'
+    USERNAME = os.getenv('EMAIL')
+    PASSWORD = os.getenv('PASSWORD')
+
+from imapclient import IMAPClient
+import email
+from email.header import decode_header
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # ✅ THIS WAS MISSING
+
+def decode_mime_words(s):
+    decoded = decode_header(s)
+    return ''.join(
+        str(t[0], t[1] or 'utf-8') if isinstance(t[0], bytes) else t[0]
+        for t in decoded
+    )
+
+def check_emails():
+    HOST = 'imap.gmail.com'
+    USERNAME = os.getenv('EMAIL')
+    PASSWORD = os.getenv('PASSWORD')
+
+    print("DEBUG EMAIL:", USERNAME)   # optional
+    print("DEBUG PASS:", PASSWORD)    # optional
 
     with IMAPClient(HOST) as server:
         server.login(USERNAME, PASSWORD)
