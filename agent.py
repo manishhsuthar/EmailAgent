@@ -1,12 +1,7 @@
-from langchain.llms import Ollama
+import requests
 from email_tool import check_emails
-import os
 
-llm = Ollama(model="qwen3.5:4b")
-
-
-def notify(msg):
-    os.system(f'notify-send "AI Agent" "{msg}"')
+OLLAMA_URL = "http://localhost:11434/api/generate"
 
 def run_agent():
     emails = check_emails()
@@ -16,17 +11,26 @@ def run_agent():
         return
 
     prompt = f"""
-    You are a smart assistant.
+You are a smart assistant.
 
-    Emails:
-    {emails}
+Emails:
+{emails}
 
-    Tasks:
-    1. Summarize
-    2. Mark important emails
-    """
+Tasks:
+1. Summarize
+2. Mark important emails
+"""
 
-    response = llm.invoke(prompt)
+    response = requests.post(
+        OLLAMA_URL,
+        json={
+            "model": "qwen3.5:4b",
+            "prompt": prompt,
+            "stream": False
+        }
+    )
+
+    result = response.json()["response"]
 
     print("\n=== AI RESPONSE ===")
-    print(response)
+    print(result)
