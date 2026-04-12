@@ -26,11 +26,13 @@ def check_emails():
         server.login(USERNAME, PASSWORD)
         print("✅ Logged in")
 
-        server.select_folder('INBOX', readonly=True)
+        server.select_folder('INBOX', readonly=False)
         print("📂 Inbox selected")
 
         messages = server.search(['UNSEEN'])[-5:] 
         print("📩 Latest unread messages:", messages)
+
+        raw_messages = server.fetch(messages, ['BODY[]'])
 
         if not messages:
             print("✅ No unread emails")
@@ -49,6 +51,7 @@ def check_emails():
             email_data = f"{from_} - {subject}"
             print("📧", email_data)
 
-            email_list.append(email_data)
+            server.add_flags(uid, ['\\Seen'])
+          
 
         return email_list
