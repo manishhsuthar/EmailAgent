@@ -105,6 +105,62 @@ python main.py
 
 ---
 
+## 🔁 Auto Start on PC Boot (Linux)
+
+To start the agent automatically whenever your PC turns on, create a `systemd` user service.
+
+### 1️⃣ Create Service File
+
+```bash
+mkdir -p ~/.config/systemd/user
+
+cat > ~/.config/systemd/user/ai-agent.service << 'EOF'
+[Unit]
+Description=Local AI Email Agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/manish/Documents/project/ai-agent
+ExecStart=/home/manish/Documents/project/ai-agent/venv/bin/python /home/manish/Documents/project/ai-agent/main.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=default.target
+EOF
+```
+
+### 2️⃣ Enable and Start the Service
+
+```bash
+systemctl --user daemon-reload
+systemctl --user enable --now ai-agent.service
+```
+
+### 3️⃣ Keep It Running After Reboot (Without Login)
+
+```bash
+sudo loginctl enable-linger manish
+```
+
+### 4️⃣ Make Sure Ollama Also Starts on Boot
+
+```bash
+sudo systemctl enable --now ollama
+```
+
+### 5️⃣ Check Service Status and Logs
+
+```bash
+systemctl --user status ai-agent.service
+journalctl --user -u ai-agent.service -f
+```
+
+---
+
 ## 🔄 How It Works
 
 1. Scheduler triggers the agent every X minutes
