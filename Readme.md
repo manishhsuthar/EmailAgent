@@ -161,6 +161,43 @@ journalctl --user -u ai-agent.service -f
 
 ---
 
+## 🪟 Auto Start on PC Boot (Windows)
+
+Use **Task Scheduler** to start Ollama and your Python agent at startup.
+
+### 1️⃣ Create a Startup Script
+
+Create `start-agent.bat` inside your project folder:
+
+```bat
+@echo off
+cd /d C:\Users\manish\Documents\project\ai-agent
+start "" ollama serve
+timeout /t 5 >nul
+C:\Users\manish\Documents\project\ai-agent\venv\Scripts\python.exe C:\Users\manish\Documents\project\ai-agent\main.py
+```
+
+### 2️⃣ Create Startup Task in Task Scheduler
+
+1. Open **Task Scheduler** → **Create Task**.
+2. Name: `AI Agent Startup`
+3. Check: `Run whether user is logged on or not`
+4. Check: `Run with highest privileges`
+5. In **Triggers** → **New** → select `At startup`
+6. In **Actions** → **New**:
+   Program/script: `C:\Users\manish\Documents\project\ai-agent\start-agent.bat`
+7. Click **OK** and save.
+
+### 3️⃣ Verify It Works
+
+1. In Task Scheduler, right-click `AI Agent Startup` → **Run**
+2. Confirm your agent starts and prints logs in terminal/output file (if configured).
+3. Reboot once and verify it starts automatically.
+
+> ⚠️ Update Windows paths if your username/folder is different.
+
+---
+
 ## 🔄 How It Works
 
 1. Scheduler triggers the agent every X minutes
